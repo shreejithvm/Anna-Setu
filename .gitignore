@@ -1,10 +1,10 @@
 # Django
-server/.env
-server/venv/
-server/__pycache__/
-server/*.pyc
-server/db.sqlite3
-server/media/
+server/AnnaSetu/.env
+server/AnnaSetu/venv/
+server/AnnaSetu/__pycache__/
+server/AnnaSetu/*.pyc
+server/AnnaSetu/db.sqlite3
+server/AnnaSetu/media/
 
 # React
 client/node_modules/
