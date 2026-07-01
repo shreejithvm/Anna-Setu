@@ -195,7 +195,7 @@ class Report(models.Model):
     )   
 
     def __init__(self, *args, **kwargs):
-        return f"{self.reporter}-to {self.reported_user}" 
+        return f"{self.reporter} -> {self.reported_user}" 
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -204,5 +204,5 @@ class Notification(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __init__(self, *args, **kwargs):
-        return f"{self.user}"
+        return f"{self.user.username}"
    
