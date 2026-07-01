@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'app1.User' # this important. Becouse it tells to django the default django authentication has customized
 
 # Application definition
 
@@ -40,7 +41,7 @@ INSTALLED_APPS = [
     'app1',
     'app2',
     'rest_framework',
-    'coreheders'
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
