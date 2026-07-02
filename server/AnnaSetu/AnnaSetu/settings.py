@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'app1',
     'app2',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'rest_fraemwork_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -119,6 +120,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 STATIC_URL = 'static/'
 
