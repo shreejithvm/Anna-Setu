@@ -16,8 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Admin cannot register")
 
         # Create user
-        user = User.objects.create_user(**validated_data)
-        user.save()
+        user = User.objects.create_user(**validated_data) # in this line create_user is special django method which makes password hashing
         return user
     
 class  ProfileSerializer(serializers.ModelSerializer):

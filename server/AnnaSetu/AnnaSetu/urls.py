@@ -16,8 +16,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView,)
+from app1 import views
+from app1.views import LoginView,RegisterView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+from rest_framework.routers import DefaultRouter
+
+routers=DefaultRouter()
+
+routers.register('user',views.UserView,basename='user_view')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
+    path("register/", RegisterView.as_view()),
+    path("login/", LoginView.as_view(), name="login"),
+    path("login/refresh/", TokenRefreshView.as_view(), name="refresh"),
+]+routers.urls 
