@@ -28,7 +28,7 @@ class LoginSerializer(TokenObtainPairSerializer):
 
         return token
 
-    def validate(self, attrs):
+    def validate(self, attrs): 
         data = super().validate(attrs)
 
         # Add extra response data
