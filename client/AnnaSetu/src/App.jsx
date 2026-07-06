@@ -1,6 +1,7 @@
 import {Route,Routes} from 'react-router-dom'
 import IfNotLogin from "./Components/IfNotLogin"
 import Register from './Components/Register'
+import Login from './Components/Register'
 
 
 function App() {
@@ -11,6 +12,8 @@ function App() {
     <Routes>
       <Route path="/" element={<IfNotLogin/>}/>
       <Route path="reg" element={<Register/>}/>
+      <Route path="log" element={<Login/>}/>
+
     </Routes>
 
     </>

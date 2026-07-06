@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.3.2",
     "lucide-react": "^1.23.0",
     "react": "^19.2.7",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.0",
+    "tailwindcss": "^4.3.2",
     "toastify": "^2.0.1"
   },
   "devDependencies": {

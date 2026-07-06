@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User, Eye, EyeOff, CheckCircle2, XCircle, ArrowRight, Loader2 } from 'lucide-react';
-import { register } from '../api/fetchApi';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
-
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -27,7 +26,7 @@ export default function RegisterPage() {
 
   const validate = () => {
     const next = {};
-    // if (!form.username.trim()) next.username = 'Username is required';
+    if (!form.username.trim()) next.username = 'Username is required';
     if (!form.email.trim()) {
       next.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
@@ -53,11 +52,11 @@ export default function RegisterPage() {
 
     setSubmitting(true);
     try {
-      const response = await fetch('register/', {
+      const response = await fetch('/api/register/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-        
+          username: form.username,
           email: form.email,
           password: form.password,
           role: 'USER',
@@ -140,7 +139,7 @@ export default function RegisterPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Username */}
-                  {/* <div>
+                  <div>
                     <label className="block text-sm font-medium text-stone-700 mb-1.5">
                       Username
                     </label>
@@ -162,7 +161,7 @@ export default function RegisterPage() {
                     {errors.username && (
                       <p className="mt-1 text-xs text-red-500">{errors.username}</p>
                     )}
-                  </div> */}
+                  </div>
 
                   {/* Email */}
                   <div>
