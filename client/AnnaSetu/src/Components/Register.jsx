@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User, Eye, EyeOff, CheckCircle2, XCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { register } from '../api/fetchApi';
-
 export default function RegisterPage() {
   const [form, setForm] = useState({
-
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -27,7 +26,7 @@ export default function RegisterPage() {
 
   const validate = () => {
     const next = {};
-    // if (!form.username.trim()) next.username = 'Username is required';
+    if (!form.username.trim()) next.username = 'Username is required';
     if (!form.email.trim()) {
       next.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
@@ -51,44 +50,49 @@ export default function RegisterPage() {
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
-    setSubmitting(true);
-    try {
-      const response = await fetch('register/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-        
-          email: form.email,
-          password: form.password,
-          role: 'USER',
-        }),
-      });
+setSubmitting(true);
+try {
+  const result = await register({
+    username: form.username,
+    email: form.email,
+    password: form.password,
+    role: 'USER',
+  });
 
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        const message =
-          data.detail ||
-          data.password?.[0] ||
-          data.email?.[0] ||
-          data.non_field_errors?.[0] ||
-          'Registration failed. Please check your details and try again.';
-        throw new Error(message);
-      }
+  // commonApi likely returns the raw response — check status here
+  if (result.status >= 200 && result.status < 300) {
+    setSuccess(true);
+  } else {
+    const data = result.data || {};
+    const message =
+      data.detail ||
+      data.password?.[0] ||
+      data.email?.[0] ||
+      data.non_field_errors?.[0] ||
+      'Registration failed. Please check your details and try again.';
+    setServerError(message);
+  }
+} catch (err) {
+  const data = err.response?.data || {};
+  const message =
+    data.detail ||
+    data.password?.[0] ||
+    data.email?.[0] ||
+    data.non_field_errors?.[0] ||
+    'Something went wrong. Please try again.';
+  setServerError(message);
+} finally {
+  setSubmitting(false);
+}
 
-      setSuccess(true);
-    } catch (err) {
-      setServerError(err.message || 'Something went wrong. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
   };
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-orange-50 via-white to-orange-50 px-4 py-10">
       <div className="w-full max-w-md">
-
-{/* Logo / brand */}
-<div className="flex items-center justify-center gap-2 mb-1">
+      
+        {/* Logo / brand */}
+        <div className="flex items-center justify-center gap-2 mb-1">
           <div className="w-9 h-9 rounded-lg bg-orange-600 flex items-center justify-center shadow-sm">
             <span className="text-white font-bold text-sm">🌾</span>
           </div>
@@ -121,7 +125,7 @@ export default function RegisterPage() {
                   onClick={() => setSuccess(false)}
                   className="mt-6 w-full py-2.5 rounded-lg border border-orange-200 text-orange-700 text-sm font-medium hover:bg-orange-50 transition-colors"
                 >
-                  Back to register
+                 Click to login
                 </button>
               </div>
             ) : (
@@ -129,7 +133,9 @@ export default function RegisterPage() {
                 <h1 className="text-2xl font-bold text-stone-800 mb-1">
                   Create your account
                 </h1>
-                <br></br>
+                <p className="text-sm text-stone-500 mb-6">
+                  Join Anna Setu and help bridge surplus food to those who need it.
+                </p>
 
                 {serverError && (
                   <div className="mb-5 flex items-start gap-2 rounded-lg bg-red-50 border border-red-100 px-3 py-2.5">
@@ -140,7 +146,7 @@ export default function RegisterPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Username */}
-                  {/* <div>
+                  <div>
                     <label className="block text-sm font-medium text-stone-700 mb-1.5">
                       Username
                     </label>
@@ -151,18 +157,17 @@ export default function RegisterPage() {
                         name="username"
                         value={form.username}
                         onChange={handleChange}
-                        placeholder="Ex: jane.doe"
-                        className={`w-full pl-10 pr-3 py-2.5 rounded-lg border text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 transition-all ${
-                          errors.username
+                        placeholder="Albin"
+                        className={`w-full pl-10 pr-3 py-2.5 rounded-lg border text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 transition-all ${errors.username
                             ? 'border-red-300 focus:ring-red-100'
                             : 'border-stone-200 focus:ring-orange-100 focus:border-orange-400'
-                        }`}
+                          }`}
                       />
                     </div>
                     {errors.username && (
                       <p className="mt-1 text-xs text-red-500">{errors.username}</p>
                     )}
-                  </div> */}
+                  </div>
 
                   {/* Email */}
                   <div>
@@ -176,12 +181,11 @@ export default function RegisterPage() {
                         name="email"
                         value={form.email}
                         onChange={handleChange}
-                        placeholder="Ex: jane@company.com"
-                        className={`w-full pl-10 pr-3 py-2.5 rounded-lg border text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 transition-all ${
-                          errors.email
+                        placeholder="albin@gmail.com"
+                        className={`w-full pl-10 pr-3 py-2.5 rounded-lg border text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 transition-all ${errors.email
                             ? 'border-red-300 focus:ring-red-100'
                             : 'border-stone-200 focus:ring-orange-100 focus:border-orange-400'
-                        }`}
+                          }`}
                       />
                     </div>
                     {errors.email && (
@@ -202,11 +206,10 @@ export default function RegisterPage() {
                         value={form.password}
                         onChange={handleChange}
                         placeholder="At least 8 characters"
-                        className={`w-full pl-10 pr-10 py-2.5 rounded-lg border text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 transition-all ${
-                          errors.password
+                        className={`w-full pl-10 pr-10 py-2.5 rounded-lg border text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 transition-all ${errors.password
                             ? 'border-red-300 focus:ring-red-100'
                             : 'border-stone-200 focus:ring-orange-100 focus:border-orange-400'
-                        }`}
+                          }`}
                       />
                       <button
                         type="button"
@@ -238,13 +241,12 @@ export default function RegisterPage() {
                         value={form.confirmPassword}
                         onChange={handleChange}
                         placeholder="Re-enter your password"
-                        className={`w-full pl-10 pr-10 py-2.5 rounded-lg border text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 transition-all ${
-                          errors.confirmPassword
+                        className={`w-full pl-10 pr-10 py-2.5 rounded-lg border text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 transition-all ${errors.confirmPassword
                             ? 'border-red-300 focus:ring-red-100'
                             : passwordsMatch
-                            ? 'border-green-300 focus:ring-green-100'
-                            : 'border-stone-200 focus:ring-orange-100 focus:border-orange-400'
-                        }`}
+                              ? 'border-green-300 focus:ring-green-100'
+                              : 'border-stone-200 focus:ring-orange-100 focus:border-orange-400'
+                          }`}
                       />
                       <button
                         type="button"
@@ -260,9 +262,8 @@ export default function RegisterPage() {
                     </div>
                     {form.confirmPassword.length > 0 && (
                       <div
-                        className={`mt-1.5 flex items-center gap-1.5 text-xs transition-colors ${
-                          passwordsMatch ? 'text-green-600' : 'text-red-500'
-                        }`}
+                        className={`mt-1.5 flex items-center gap-1.5 text-xs transition-colors ${passwordsMatch ? 'text-green-600' : 'text-red-500'
+                          }`}
                       >
                         {passwordsMatch ? (
                           <CheckCircle2 className="w-3.5 h-3.5" />
@@ -298,7 +299,7 @@ export default function RegisterPage() {
                 <p className="mt-6 text-center text-sm text-stone-500">
                   Already have an account?{' '}
                   <a
-                    href="/login"
+                    href="/log"
                     className="text-orange-600 font-medium hover:text-orange-700"
                   >
                     Sign in

@@ -1,7 +1,7 @@
 import {Route,Routes} from 'react-router-dom'
 import IfNotLogin from "./Components/IfNotLogin"
 import Register from './Components/Register'
-import Login from './Components/Register'
+import Login from './Components/Login'
 
 
 function App() {
