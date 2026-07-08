@@ -56,8 +56,25 @@ class Category(models.Model):
 
 
 class FoodListing(models.Model):
+    DISTRICT_CHOICES = [
+        ("KASARAGOD", "Kasaragod"),
+        ("KANNUR", "Kannur"),
+        ("WAYANAD", "Wayanad"),
+        ("KOZHIKODE", "Kozhikode"),
+        ("MALAPPURAM", "Malappuram"),
+        ("PALAKKAD", "Palakkad"),
+        ("THRISSUR", "Thrissur"),
+        ("ERNAKULAM", "Ernakulam"),
+        ("IDUKKI", "Idukki"),
+        ("KOTTAYAM", "Kottayam"),
+        ("ALAPPUZHA", "Alappuzha"),
+        ("PATHANAMTHITTA", "Pathanamthitta"),
+        ("KOLLAM", "Kollam"),
+        ("THIRUVANANTHAPURAM", "Thiruvananthapuram"),
+    ]    
     seller=models.ForeignKey(User, on_delete=models.CASCADE)
     food_category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    district = models.CharField(max_length=30,choices=DISTRICT_CHOICES,null=True)    
     expiry_time = models.DateTimeField()
     title = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(max_length=200, blank=True, null=True)
