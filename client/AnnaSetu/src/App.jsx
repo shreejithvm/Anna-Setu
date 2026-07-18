@@ -10,10 +10,10 @@ function App() {
   return (
     <>
     <Routes>
-      <Route path="ifnot" element={<IfNotLogin/>}/>
+      <Route path="/" element={<IfNotLogin/>}/>
       <Route path="reg" element={<Register/>}/>
       <Route path="log" element={<Login/>}/>
-      <Route path="/" element={<Home/>}/>
+      <Route path="home" element={<Home/>}/>
 
     </Routes>
 

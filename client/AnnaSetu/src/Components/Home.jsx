@@ -380,7 +380,7 @@ export default function AnnaSetu() {
               </g>
               <g>
                 <circle cx="368" cy="198" r="38" fill={dark ? "#7C2D12" : "#FED7AA"} />
-                <path d="M350 210c6 10 24 10 30 -2" stroke="#C2410C" strokeWidth="3" strokeLinecap="round" fill="none" />
+                <path d="M353 210c6 10 24 10 30 -2" stroke="#C2410C" strokeWidth="3" strokeLinecap="round" fill="none" />
                 <circle cx="358" cy="190" r="5" fill="#EA580C" /><circle cx="378" cy="190" r="5" fill="#EA580C" />
               </g>
 
