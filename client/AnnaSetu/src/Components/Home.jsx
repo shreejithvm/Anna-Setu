@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from "react"
 import {
   Menu, X, Sun, Moon, MapPin, ArrowRight, Plus, Bell,
   ClipboardList, LayoutGrid, User, ChevronDown, UtensilsCrossed,
-  Apple, Croissant, Milk, Wheat, Package, Search, Sparkles
+  Apple, Croissant, Milk, Wheat, Package, Search, Sparkles,HelpCircle 
 } from "lucide-react";
 
 /* ---------------------------------------------------------
@@ -41,6 +41,34 @@ const STATS = [
   { target: 340, suffix: "", label: "Active sellers" },
   { target: 14, suffix: "", label: "Districts covered" },
 ];
+
+const FAQS = [
+  {
+    q: "How does Anna Setu decide what's actually 'surplus'?",
+    a: "Sellers list only what they'd otherwise waste that day extra plates from a lunch service, produce that won't keep till tomorrow, or a bakery's end-of-day stock. You always see the category, quantity, and price before you commit to anything.",
+  },
+  {
+    q: "Is the food safe to eat?",
+    a: "Every seller on Anna Setu is verified before their first listing goes live, and cooked meals are expected to be listed within a safe window of preparation. Look for the 'Verified seller' tag on any card before you order.",
+  },
+  {
+    q: "How do I pick up an order?",
+    a: "Pickup details and timing are arranged directly with the seller once you place an order — most listings are hyperlocal, so you're typically collecting from a kitchen or stall within your own district.",
+  },
+  {
+    q: "Can I list food if I'm not a registered business?",
+    a: "Yes. Home cooks, small farms, and individual sellers can list alongside restaurants and bakeries — tap 'Sell' and we'll walk you through a quick verification step first.",
+  },
+  {
+    q: "What happens if a listing runs out before I order?",
+    a: "Listings are removed the moment a seller marks them as sold out, so what you see in the grid is what's actually still available. No stale listings, no wasted trips.",
+  },
+  {
+    q: "Which districts is Anna Setu live in?",
+    a: "We currently operate across all 14 districts of Kerala, from Kasaragod to Thiruvananthapuram use the district filter above the listings to narrow things down to your own.",
+  },
+];
+
 
 /* ---------------------------------------------------------
    Small hooks
@@ -161,6 +189,66 @@ function ListingCard({ item, index, onDetails, dark }) {
   );
 }
 
+function FaqItem({ item, index, isOpen, onToggle, dark }) {
+  const [ref, inView] = useInView({ threshold: 0.1 });
+  const panelRef = useRef(null);
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: inView ? `${(index % 6) * 60}ms` : "0ms" }}
+      className={`transition-all duration-700 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+    >
+      <div
+        className={`group rounded-2xl border transition-all duration-300 overflow-hidden ${
+          isOpen
+            ? dark ? "border-orange-500/50 bg-stone-900 shadow-lg shadow-orange-950/20" : "border-orange-300 bg-white shadow-lg shadow-orange-100/60"
+            : dark ? "border-stone-800 bg-stone-900/60 hover:border-stone-700" : "border-orange-100 bg-white/70 hover:border-orange-200"
+        }`}
+      >
+        <button
+          onClick={() => onToggle(index)}
+          aria-expanded={isOpen}
+          className="w-full flex items-center gap-4 text-left px-5 py-4.5 sm:px-6 sm:py-5"
+        >
+          <span
+            className={`shrink-0 font-display text-xs font-semibold w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300 ${
+              isOpen
+                ? "bg-orange-600 text-white"
+                : dark ? "bg-stone-800 text-stone-400" : "bg-orange-50 text-orange-700"
+            }`}
+          >
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className={`flex-1 font-semibold text-[15px] sm:text-base ${dark ? "text-stone-100" : "text-stone-900"}`}>
+            {item.q}
+          </span>
+          <span
+            className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-300 ${
+              isOpen ? "rotate-45 bg-orange-600 border-orange-600 text-white" : dark ? "border-stone-700 text-stone-400 group-hover:border-orange-500 group-hover:text-orange-400" : "border-orange-200 text-orange-600 group-hover:border-orange-400"
+            }`}
+          >
+            <Plus className="w-4 h-4" />
+          </span>
+        </button>
+        <div
+          className="grid transition-all duration-400 ease-out"
+          style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+        >
+          <div className="overflow-hidden">
+            <p
+              ref={panelRef}
+              className={`px-5 sm:px-6 pb-5 sm:pb-6 pl-[3.75rem] sm:pl-[4.25rem] text-sm leading-relaxed ${dark ? "text-stone-400" : "text-stone-600"}`}
+            >
+              {item.a}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 function Toast({ toast }) {
   if (!toast.show) return null;
   return (
@@ -185,7 +273,7 @@ export default function AnnaSetu() {
   const [toast, setToast] = useState({ show: false, msg: "" });
   const [dark, setDark] = useState(false);
   const [heroRef, heroInView] = useInView({ threshold: 0.2 });
-
+  const [openFaq, setOpenFaq] = useState(0);
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 700);
     return () => clearTimeout(t);
@@ -208,6 +296,10 @@ export default function AnnaSetu() {
       (l) => (category === "all" || l.category === category) && (district === "all" || l.district === district)
     );
   }, [category, district]);
+
+  const toggleFaq = useCallback((i) => {
+  setOpenFaq((cur) => (cur === i ? -1 : i));
+}, []);
 
   return (
     <div className={`min-h-screen font-sans antialiased transition-colors duration-300 ${dark ? "bg-stone-950 text-stone-200" : "bg-orange-50 text-stone-800"}`}>
@@ -241,6 +333,7 @@ export default function AnnaSetu() {
           <nav className="hidden md:flex items-center gap-2 flex-1 min-w-0">
             <a href="#hero" className={`font-semibold text-sm px-3 py-2 rounded-full transition-colors ${dark ? "text-stone-300 hover:text-orange-400 hover:bg-stone-900" : "text-stone-600 hover:text-orange-700 hover:bg-orange-100"}`}>Home</a>
             <a href="#contact" className={`font-semibold text-sm px-3 py-2 rounded-full transition-colors ${dark ? "text-stone-300 hover:text-orange-400 hover:bg-stone-900" : "text-stone-600 hover:text-orange-700 hover:bg-orange-100"}`}>Contact us</a>
+            <a href="#faq" className={`font-semibold text-sm px-3 py-2 rounded-full transition-colors ${dark ? "text-stone-300 hover:text-orange-400 hover:bg-stone-900" : "text-stone-600 hover:text-orange-700 hover:bg-orange-100"}`}>Faq</a>
           </nav>
 
           <div className="flex items-center gap-2 ml-auto md:ml-0 shrink-0">
@@ -341,7 +434,7 @@ export default function AnnaSetu() {
             </h1>
 
             <p className={`text-base sm:text-lg leading-relaxed max-w-md mb-8 ${dark ? "text-stone-400" : "text-stone-600"}`}>
-              Anna Setu is the bridge between kitchens with extra food and neighbours who need it — restaurants, home cooks and farms list what's spare, and it reaches someone nearby before it's wasted.
+              Anna Setu is the bridge between kitchens with extra food and neighbours who need it restaurants, home cooks and farms list what's spare, and it reaches someone nearby before it's wasted.
             </p>
             <div className="flex gap-3.5 flex-wrap">
               <button
@@ -404,7 +497,7 @@ export default function AnnaSetu() {
                 <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.85;1" dur="4.5s" repeatCount="indefinite" begin="2.8s" />
               </circle>
 
-              <text x="210" y="30" textAnchor="middle" fontFamily="Fraunces, serif" fontSize="15" fill={dark ? "#FDBA74" : "#C2410C"} fontWeight="600">setu · the bridge</text>
+              <text x="210" y="30" textAnchor="middle" fontFamily="Fraunces, serif" fontSize="15" fill={dark ? "#FDBA74" : "#C2410C"} fontWeight="600">Anna Setu</text>
             </svg>
           </div>
         </div>
@@ -484,6 +577,40 @@ export default function AnnaSetu() {
           </div>
         )}
       </section>
+ 
+ 
+      {/* ================= FAQ ================= */}
+      <section id="faq" className="relative max-w-[1280px] mx-auto px-5 sm:px-7 py-20 overflow-hidden">
+        <div className={`pointer-events-none absolute top-1/3 -left-32 w-96 h-96 rounded-full blur-3xl ${dark ? "bg-orange-900/10" : "bg-orange-100/60"}`} />
+ 
+        <div className="relative grid grid-cols-1 lg:grid-cols-[minmax(0,340px)_1fr] gap-10 lg:gap-16">
+          <div className="lg:sticky lg:top-24 lg:self-start">
+            <div className={`inline-flex items-center gap-2 font-bold text-xs tracking-wider uppercase px-3.5 py-1.5 rounded-full mb-5 ${dark ? "bg-stone-900 text-orange-400" : "bg-orange-100 text-orange-700"}`}>
+              <HelpCircle className="w-3.5 h-3.5" /> Good to know
+            </div>
+            <h2 className={`font-display text-3xl sm:text-4xl font-semibold leading-[1.15] mb-4 ${dark ? "text-stone-50" : "text-stone-900"}`}>
+              Questions, answered.
+            </h2>
+            <p className={`text-sm sm:text-base leading-relaxed max-w-sm ${dark ? "text-stone-400" : "text-stone-600"}`}>
+              Everything you need to know before you buy your first plate or list your first batch. Still stuck? Reach out — we read every message.
+            </p>
+            <button
+              onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+              className={`mt-7 inline-flex items-center gap-2 font-bold text-sm px-5 py-3 rounded-full border transition-all hover:-translate-y-0.5 ${dark ? "border-stone-700 text-stone-100 hover:border-orange-500 hover:bg-stone-900" : "border-stone-300 text-stone-800 hover:border-orange-400 hover:bg-orange-50"}`}
+            >
+              Get in touch
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+ 
+          <div className="flex flex-col gap-3">
+            {FAQS.map((item, i) => (
+              <FaqItem key={item.q} item={item} index={i} isOpen={openFaq === i} onToggle={toggleFaq} dark={dark} />
+            ))}
+          </div>
+        </div>
+      </section>
+      
 
       <footer id="contact" className="bg-stone-900 text-stone-400 px-7 py-8 text-center text-sm">
         <p><b className="text-orange-400">Anna Setu</b> — a bridge between surplus and need, built across Kerala.</p>
