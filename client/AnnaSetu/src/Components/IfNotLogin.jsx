@@ -187,13 +187,35 @@ function DistrictMotif({ motif, className }) {
         <path d="M20 27 L20 36M28 31 L28 40M36 31 L36 40M44 27 L44 36" {...common} />
       </>
     ),
-    elephant: (
+  elephant: (
       <>
-        <path d="M14 44c-2-10 6-18 16-18 8 0 14 4 16 10 4 2 6 6 4 10-2 3-6 3-8 1-2 4-8 6-14 6-8 0-14-4-14-9z" {...common} />
-        <path d="M18 40c-2 4-2 8 2 10" {...common} />
-        <circle cx="24" cy="28" r="6" {...common} />
-        <path d="M22 20 L30 20 L26 12 Z" fill="currentColor" stroke="none" />
-        <path d="M20 50v4M28 50v4M36 50v4M42 48v4" {...common} />
+        {/* Main Body with Dome Skull, Arched Spine & Solid Pillar Legs */}
+        <path
+          d="M38 34c3-1 9-1 13-4 3-3 2-8-1-11-4-4-10-3-15-1-3 1-5 2-8 2-6 0-11-3-16-1-5 2-7 7-7 12 0 6 1 12 1 17v3h6v-5c1 0 4 0 5-1v6h6v-8c2 0 4 0 6 1v7h6v-8c2-2 3-5 4-10"
+          {...common}
+        />
+        {/* Anatomical Ear with Inner Fold */}
+        <path
+          d="M27 21c5-1 10 2 10 9 0 7-5 12-10 11-4-1-5-6-4-10 1-5 2-9 4-10z"
+          {...common}
+        />
+        {/* Curved Prehensile Trunk */}
+        <path
+          d="M48 23c4-3 8-1 8 4 0 6-5 12-11 13-3 1-6-1-6-3 0-2 2-3 4-2 3 1 5-1 6-4"
+          {...common}
+        />
+        {/* Graceful Ivory Tusk */}
+        <path
+          d="M40 37c4 1 8 4 9 8-2 0-5-3-7-5"
+          {...common}
+        />
+        {/* Natural Eye Placement */}
+        <circle cx="39" cy="24" r="1.5" fill="currentColor" stroke="none" />
+        {/* Slender Tufted Tail */}
+        <path
+          d="M7 32c-2 4-2 9 0 13"
+          {...common}
+        />
       </>
     ),
     windmill: (
@@ -291,7 +313,7 @@ function DistrictCard({ district, count, index, onSelect, dark }) {
   return (
     <button
       ref={ref}
-      onClick={() => onSelect(district.name)}
+      // onClick={() => onSelect(district.name)}
       style={{ transitionDelay: inView ? `${(index % 8) * 50}ms` : "0ms" }}
       className={`group relative rounded-3xl border overflow-hidden flex flex-col text-left
         transition-all duration-700 ease-out
@@ -425,6 +447,85 @@ function FaqItem({ item, index, isOpen, onToggle, dark }) {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ProfileMenu({ user, onViewMore, onLogout, dark }) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef(null);
+ 
+  // Close on outside click and on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onClickOutside = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    };
+    const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+ 
+  return (
+    <div className="relative" ref={wrapRef}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-[13px] shrink-0 transition-all
+          bg-gradient-to-br from-orange-400 to-orange-700 text-white
+          ${open ? "ring-2 ring-orange-500 ring-offset-2" : "hover:opacity-90"}
+          ${open && dark ? "ring-offset-stone-950" : "ring-offset-white"}`}
+      >
+        {user.initial}
+      </button>
+ 
+      {open && (
+        <div
+          role="menu"
+          className={`absolute right-0 mt-2.5 w-64 rounded-2xl border shadow-2xl overflow-hidden z-[150] animate-[toastIn_0.2s_ease-out]
+            ${dark ? "bg-stone-900 border-stone-800" : "bg-white border-orange-100"}`}
+        >
+          {/* user summary */}
+          <div className={`flex items-center gap-3 px-4 py-4 border-b ${dark ? "border-stone-800" : "border-orange-100"}`}>
+            <div className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center font-bold text-sm bg-gradient-to-br from-orange-400 to-orange-700 text-white">
+              {user.initial}
+            </div>
+            <div className="min-w-0">
+              <div className={`font-bold text-sm truncate ${dark ? "text-stone-100" : "text-stone-900"}`}>{user.name}</div>
+              <div className={`text-xs truncate ${dark ? "text-stone-500" : "text-stone-500"}`}>{user.email}</div>
+            </div>
+          </div>
+ 
+          {/* menu list */}
+          <div className="py-1.5">
+            <button
+              role="menuitem"
+              onClick={() => { setOpen(false); onViewMore?.(); }}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-left transition-colors
+                ${dark ? "text-stone-200 hover:bg-stone-800" : "text-stone-700 hover:bg-orange-50"}`}
+            >
+              <User className="w-4 h-4 text-orange-500" />
+              <span className="flex-1">View more</span>
+              <ChevronRight className="w-4 h-4 opacity-40" />
+            </button>
+ 
+            <button
+              role="menuitem"
+              onClick={() => { setOpen(false); onLogout?.(); }}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-left transition-colors
+                ${dark ? "text-red-400 hover:bg-stone-800" : "text-red-600 hover:bg-red-50"}`}
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
