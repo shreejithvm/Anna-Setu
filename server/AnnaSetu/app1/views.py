@@ -9,6 +9,11 @@ from rest_framework.permissions import AllowAny,IsAdminUser
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
 # Create your views here.
 
 class RegisterView(generics.CreateAPIView):
@@ -44,6 +49,28 @@ class LoginSerializer(TokenObtainPairSerializer):
 
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
+
+
+
+class LogoutView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response({
+                "message": "Logout successful"
+            })
+
+        except Exception:
+            return Response({
+                "error": "Invalid refresh token"
+            }, status=400)    
 
 
 class UserView(viewsets.ModelViewSet):

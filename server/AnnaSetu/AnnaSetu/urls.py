@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from app1 import views
-from app1.views import LoginView,RegisterView
+from app1.views import LoginView,RegisterView,LogoutView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -34,4 +34,5 @@ urlpatterns = [
     path("register/", RegisterView.as_view()),
     path("login/", LoginView.as_view(), name="login"),
     path("login/refresh/", TokenRefreshView.as_view(), name="refresh"),
+    path('logout/', LogoutView.as_view()),
 ]+routers.urls 
