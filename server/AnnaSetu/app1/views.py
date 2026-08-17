@@ -14,7 +14,24 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+
 # Create your views here.
+
+# to find username and email.. details who logged
+
+@api_view(["GET"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def getdata(request, *args, **kwargs):
+
+    user = request.user
+
+    return Response({
+        "id": user.id,
+        "username": user.username,
+        "email":user.email
+    })
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()

@@ -74,7 +74,7 @@ export default function LoginPage() {
         localStorage.setItem("user", JSON.stringify(result.data));
 
         // Navigate according to your app
-        window.location.href = "/";
+        window.location.href = "home";
       } else {
         setServerError(
           result.data?.detail || "Invalid email or password."

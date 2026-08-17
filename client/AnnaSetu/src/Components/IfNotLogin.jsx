@@ -450,7 +450,7 @@ function FaqItem({ item, index, isOpen, onToggle, dark }) {
     </div>
   );
 }
-
+//  only added this and need to set profile sectiion in nav bar
 function ProfileMenu({ user, onViewMore, onLogout, dark }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
@@ -702,7 +702,7 @@ export default function AnnaSetu() {
               <LayoutGrid className="w-[18px] h-[18px]" />
             </button>
 
-            {/* Login / Logout — in-memory session state, no router or localStorage in this environment */}
+            {/* Login / Profile — in-memory session state, no router or localStorage in this environment */}
             {!isLoggedIn ? (
               <button
                 onClick={handleLogin}
@@ -711,12 +711,12 @@ export default function AnnaSetu() {
                 Login
               </button>
             ) : (
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full text-sm font-bold transition-colors"
-              >
-                Logout
-              </button>
+              <ProfileMenu
+                user={CURRENT_USER}
+                onViewMore={() => fireToast("Opening your profile…")}
+                onLogout={handleLogout}
+                dark={dark}
+              />
             )}
 
             <button onClick={() => setMobileOpen(true)} className={`md:hidden w-9 h-9 flex items-center justify-center ${dark ? "text-stone-100" : "text-stone-800"}`} aria-label="Menu">

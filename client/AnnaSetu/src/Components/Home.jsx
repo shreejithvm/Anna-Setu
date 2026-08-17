@@ -4,7 +4,7 @@ import {
   ClipboardList, LayoutGrid, ChevronDown, UtensilsCrossed,
   Apple, Croissant, Milk, Wheat, Package, Search, Sparkles, HelpCircle
 } from "lucide-react";
-
+import { getuser } from "../api/fetchApi";
 /* ---------------------------------------------------------
    Static data
 --------------------------------------------------------- */
@@ -187,7 +187,7 @@ function DistrictMotif({ motif, className }) {
         <path d="M20 27 L20 36M28 31 L28 40M36 31 L36 40M44 27 L44 36" {...common} />
       </>
     ),
-elephant: (
+    elephant: (
       <>
         {/* Main Body with Dome Skull, Arched Spine & Solid Pillar Legs */}
         <path
@@ -313,7 +313,7 @@ function DistrictCard({ district, count, index, onSelect, dark }) {
   return (
     <button
       ref={ref}
-      onClick={() => onSelect(district.name)}
+      // onClick={() => onSelect(district.name)}
       style={{ transitionDelay: inView ? `${(index % 8) * 50}ms` : "0ms" }}
       className={`group relative rounded-3xl border overflow-hidden flex flex-col text-left
         transition-all duration-700 ease-out
@@ -356,7 +356,7 @@ function ListingCard({ item, index, onDetails, dark }) {
     >
       {/* glow ring on hover */}
       <div className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-           style={{ boxShadow: "0 0 0 2px rgba(234,88,12,0.25), 0 20px 40px -12px rgba(194,65,12,0.25)" }} />
+        style={{ boxShadow: "0 0 0 2px rgba(234,88,12,0.25), 0 20px 40px -12px rgba(194,65,12,0.25)" }} />
 
       <div className={`relative h-36 flex items-center justify-center overflow-hidden bg-gradient-to-br ${dark ? "from-stone-800 to-stone-900" : "from-orange-50 to-orange-100"}`}>
         <div className="absolute inset-0 bg-gradient-to-tr from-orange-200/0 via-white/0 to-orange-200/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -405,11 +405,10 @@ function FaqItem({ item, index, isOpen, onToggle, dark }) {
       className={`transition-all duration-700 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
     >
       <div
-        className={`group rounded-2xl border transition-all duration-300 overflow-hidden ${
-          isOpen
+        className={`group rounded-2xl border transition-all duration-300 overflow-hidden ${isOpen
             ? dark ? "border-orange-500/50 bg-stone-900 shadow-lg shadow-orange-950/20" : "border-orange-300 bg-white shadow-lg shadow-orange-100/60"
             : dark ? "border-stone-800 bg-stone-900/60 hover:border-stone-700" : "border-orange-100 bg-white/70 hover:border-orange-200"
-        }`}
+          }`}
       >
         <button
           onClick={() => onToggle(index)}
@@ -417,11 +416,10 @@ function FaqItem({ item, index, isOpen, onToggle, dark }) {
           className="w-full flex items-center gap-4 text-left px-5 py-4.5 sm:px-6 sm:py-5"
         >
           <span
-            className={`shrink-0 font-display text-xs font-semibold w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300 ${
-              isOpen
+            className={`shrink-0 font-display text-xs font-semibold w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300 ${isOpen
                 ? "bg-orange-600 text-white"
                 : dark ? "bg-stone-800 text-stone-400" : "bg-orange-50 text-orange-700"
-            }`}
+              }`}
           >
             {String(index + 1).padStart(2, "0")}
           </span>
@@ -429,9 +427,8 @@ function FaqItem({ item, index, isOpen, onToggle, dark }) {
             {item.q}
           </span>
           <span
-            className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-300 ${
-              isOpen ? "rotate-45 bg-orange-600 border-orange-600 text-white" : dark ? "border-stone-700 text-stone-400 group-hover:border-orange-500 group-hover:text-orange-400" : "border-orange-200 text-orange-600 group-hover:border-orange-400"
-            }`}
+            className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-300 ${isOpen ? "rotate-45 bg-orange-600 border-orange-600 text-white" : dark ? "border-stone-700 text-stone-400 group-hover:border-orange-500 group-hover:text-orange-400" : "border-orange-200 text-orange-600 group-hover:border-orange-400"
+              }`}
           >
             <Plus className="w-4 h-4" />
           </span>
@@ -447,6 +444,85 @@ function FaqItem({ item, index, isOpen, onToggle, dark }) {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+//  only added this and need to set profile sectiion in nav bar
+function ProfileMenu({ user, onViewMore, onLogout, dark }) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef(null);
+
+  // Close on outside click and on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onClickOutside = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    };
+    const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div className="relative" ref={wrapRef}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-[13px] shrink-0 transition-all
+          bg-gradient-to-br from-orange-400 to-orange-700 text-white
+          ${open ? "ring-2 ring-orange-500 ring-offset-2" : "hover:opacity-90"}
+          ${open && dark ? "ring-offset-stone-950" : "ring-offset-white"}`}
+      >
+        {user.initial}
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className={`absolute right-0 mt-2.5 w-64 rounded-2xl border shadow-2xl overflow-hidden z-[150] animate-[toastIn_0.2s_ease-out]
+            ${dark ? "bg-stone-900 border-stone-800" : "bg-white border-orange-100"}`}
+        >
+          {/* user summary */}
+          <div className={`flex items-center gap-3 px-4 py-4 border-b ${dark ? "border-stone-800" : "border-orange-100"}`}>
+            <div className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center font-bold text-sm bg-gradient-to-br from-orange-400 to-orange-700 text-white">
+              {user.initial}
+            </div>
+            <div className="min-w-0">
+              <div className={`font-bold text-sm truncate ${dark ? "text-stone-100" : "text-stone-900"}`}>{user.name}</div>
+              <div className={`text-xs truncate ${dark ? "text-stone-500" : "text-stone-500"}`}>{user.email}</div>
+            </div>
+          </div>
+
+          {/* menu list */}
+          <div className="py-1.5">
+            <button
+              role="menuitem"
+              onClick={() => { setOpen(false); onViewMore?.(); }}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-left transition-colors
+                ${dark ? "text-stone-200 hover:bg-stone-800" : "text-stone-700 hover:bg-orange-50"}`}
+            >
+              <User className="w-4 h-4 text-orange-500" />
+              <span className="flex-1">View more</span>
+              <ChevronRight className="w-4 h-4 opacity-40" />
+            </button>
+
+            <button
+              role="menuitem"
+              onClick={() => { setOpen(false); onLogout?.(); }}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-left transition-colors
+                ${dark ? "text-red-400 hover:bg-stone-800" : "text-red-600 hover:bg-red-50"}`}
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -573,11 +649,10 @@ export default function AnnaSetu() {
       `}</style>
 
       {/* ================= NAVBAR ================= */}
-      <header className={`sticky top-0 z-[100] transition-all duration-300 ${
-        scrolled
+      <header className={`sticky top-0 z-[100] transition-all duration-300 ${scrolled
           ? dark ? "bg-stone-950/80 backdrop-blur-md shadow-sm border-b border-stone-800" : "bg-white/80 backdrop-blur-md shadow-sm border-b border-orange-100"
           : dark ? "bg-stone-950/60 backdrop-blur-sm border-b border-transparent" : "bg-orange-50/60 backdrop-blur-sm border-b border-transparent"
-      }`}>
+        }`}>
         <div className="max-w-[1280px] mx-auto flex items-center gap-4 px-5 sm:px-7 py-3.5">
           <button onClick={goHome} className={`flex items-center gap-2 font-display font-bold text-xl shrink-0 ${dark ? "text-stone-100" : "text-stone-900"}`}>
             <svg viewBox="0 0 32 32" fill="none" className="w-7 h-7">
@@ -623,7 +698,7 @@ export default function AnnaSetu() {
               <LayoutGrid className="w-[18px] h-[18px]" />
             </button>
 
-            {/* Login / Logout — in-memory session state, no router or localStorage in this environment */}
+            {/* Login / Profile — in-memory session state, no router or localStorage in this environment */}
             {!isLoggedIn ? (
               <button
                 onClick={handleLogin}
@@ -632,12 +707,16 @@ export default function AnnaSetu() {
                 Login
               </button>
             ) : (
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full text-sm font-bold transition-colors"
-              >
-                Logout
-              </button>
+              <ProfileMenu
+                user={{
+                  name: User.name,
+                  email: User.email,
+                  initial: currentUser.name?.[0]?.toUpperCase() || "?",
+                }}
+                onViewMore={() => fireToast("Opening your profile…")}
+                onLogout={handleLogout}
+                dark={dark}
+              />
             )}
 
             <button onClick={() => setMobileOpen(true)} className={`md:hidden w-9 h-9 flex items-center justify-center ${dark ? "text-stone-100" : "text-stone-800"}`} aria-label="Menu">
@@ -850,11 +929,10 @@ export default function AnnaSetu() {
             <div className="flex items-center gap-2.5 flex-wrap mb-2">
               <button
                 onClick={() => setCategory("all")}
-                className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
-                  category === "all"
+                className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${category === "all"
                     ? "bg-orange-600 text-white border-orange-600 shadow-sm"
                     : dark ? "bg-stone-900 text-stone-300 border-stone-700 hover:border-orange-500" : "bg-white text-stone-600 border-orange-100 hover:border-orange-300"
-                }`}
+                  }`}
               >
                 All categories
               </button>
@@ -865,11 +943,10 @@ export default function AnnaSetu() {
                   <button
                     key={c}
                     onClick={() => setCategory(c)}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
-                      active
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border transition-all ${active
                         ? "bg-orange-600 text-white border-orange-600 shadow-sm"
                         : dark ? "bg-stone-900 text-stone-300 border-stone-700 hover:border-orange-500" : "bg-white text-stone-600 border-orange-100 hover:border-orange-300"
-                    }`}
+                      }`}
                   >
                     <Icon className="w-3.5 h-3.5" /> {c}
                   </button>

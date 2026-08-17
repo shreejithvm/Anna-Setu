@@ -33,6 +33,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("register/", RegisterView.as_view()),
     path("login/", LoginView.as_view(), name="login"),
+    path('get/user',views.getdata),
     path("login/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path('logout/', LogoutView.as_view()),
 ]+routers.urls 

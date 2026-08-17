@@ -9,3 +9,8 @@ export const login=(data)=>{
     return commonApi("http://127.0.0.1:8000/login/","POST",data)
 
 }
+
+export const getuser=(header)=>{
+    return commonApi("http://127.0.0.1:8000/get/user","GET","",header)
+
+}
