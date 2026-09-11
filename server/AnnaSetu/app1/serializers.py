@@ -31,12 +31,35 @@ class CategorySerializer(serializers.ModelSerializer):
           fields=['id','name','expiry_hours']
 
 class FoodListingSerializer(serializers.ModelSerializer):
-      seller_email = serializers.ReadOnlyField(source="seller.email")
-      category_name = serializers.ReadOnlyField(source="food_category.name")
-      class Meta:
-           model=FoodListing
-           fields=['id','seller','food_category','expiry_time','title','description','quantity','price','food_image','status','created_at']  
-           read_only_fields = ("seller", "status", "created_at")        
+    seller_email = serializers.ReadOnlyField(source="seller.email")
+    category_name = serializers.ReadOnlyField(source="food_category.name")
+
+    class Meta:
+        model = FoodListing
+
+        fields = [
+            'id',
+            'seller',
+            'seller_email',
+            'food_category',
+            'category_name',
+            'district',
+            'expiry_time',
+            'title',
+            'description',
+            'quantity',
+            'price',
+            'food_image',
+            'status',
+            'created_at',
+        ]
+
+        read_only_fields = [
+            'seller_email',
+            'category_name',
+            'status',
+            'created_at',
+        ]   
      
 
      

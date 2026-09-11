@@ -28,6 +28,7 @@ from rest_framework.routers import DefaultRouter
 routers=DefaultRouter()
 
 routers.register('user',views.UserView,basename='user_view')
+routers.register('foodlist',views.FoodListingView,basename='food-listing')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

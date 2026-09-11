@@ -4,6 +4,7 @@ import {
   ClipboardList, LayoutGrid, ChevronDown, UtensilsCrossed,
   Apple, Croissant, Milk, Wheat, Package, Search, Sparkles, HelpCircle
 } from "lucide-react";
+
 import { getuser } from "../api/fetchApi";
 /* ---------------------------------------------------------
    Static data
@@ -86,6 +87,8 @@ const FAQS = [
     a: "We currently operate across all 14 districts of Kerala, from Kasaragod to Thiruvananthapuram — tap a district's card above to see what's available there.",
   },
 ];
+
+
 
 /* ---------------------------------------------------------
    Small hooks
@@ -406,8 +409,8 @@ function FaqItem({ item, index, isOpen, onToggle, dark }) {
     >
       <div
         className={`group rounded-2xl border transition-all duration-300 overflow-hidden ${isOpen
-            ? dark ? "border-orange-500/50 bg-stone-900 shadow-lg shadow-orange-950/20" : "border-orange-300 bg-white shadow-lg shadow-orange-100/60"
-            : dark ? "border-stone-800 bg-stone-900/60 hover:border-stone-700" : "border-orange-100 bg-white/70 hover:border-orange-200"
+          ? dark ? "border-orange-500/50 bg-stone-900 shadow-lg shadow-orange-950/20" : "border-orange-300 bg-white shadow-lg shadow-orange-100/60"
+          : dark ? "border-stone-800 bg-stone-900/60 hover:border-stone-700" : "border-orange-100 bg-white/70 hover:border-orange-200"
           }`}
       >
         <button
@@ -417,8 +420,8 @@ function FaqItem({ item, index, isOpen, onToggle, dark }) {
         >
           <span
             className={`shrink-0 font-display text-xs font-semibold w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300 ${isOpen
-                ? "bg-orange-600 text-white"
-                : dark ? "bg-stone-800 text-stone-400" : "bg-orange-50 text-orange-700"
+              ? "bg-orange-600 text-white"
+              : dark ? "bg-stone-800 text-stone-400" : "bg-orange-50 text-orange-700"
               }`}
           >
             {String(index + 1).padStart(2, "0")}
@@ -649,9 +652,9 @@ export default function AnnaSetu() {
       `}</style>
 
       {/* ================= NAVBAR ================= */}
-      <header className={`sticky top-0 z-[100] transition-all duration-300 ${scrolled
-          ? dark ? "bg-stone-950/80 backdrop-blur-md shadow-sm border-b border-stone-800" : "bg-white/80 backdrop-blur-md shadow-sm border-b border-orange-100"
-          : dark ? "bg-stone-950/60 backdrop-blur-sm border-b border-transparent" : "bg-orange-50/60 backdrop-blur-sm border-b border-transparent"
+      <header  className={`sticky top-0 z-[100] transition-all duration-300 ${scrolled
+        ? dark ? "bg-stone-950/80 backdrop-blur-md shadow-sm border-b border-stone-800" : "bg-white/80 backdrop-blur-md shadow-sm border-b border-orange-100"
+        : dark ? "bg-stone-950/60 backdrop-blur-sm border-b border-transparent" : "bg-orange-50/60 backdrop-blur-sm border-b border-transparent"
         }`}>
         <div className="max-w-[1280px] mx-auto flex items-center gap-4 px-5 sm:px-7 py-3.5">
           <button onClick={goHome} className={`flex items-center gap-2 font-display font-bold text-xl shrink-0 ${dark ? "text-stone-100" : "text-stone-900"}`}>
@@ -699,9 +702,9 @@ export default function AnnaSetu() {
             </button>
 
             {/* Login / Profile — in-memory session state, no router or localStorage in this environment */}
-            {!isLoggedIn ? (
+            {!user.username ? (
               <button
-                onClick={handleLogin}
+                onClick={() => navigate("/login")}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-bold transition-colors"
               >
                 Login
@@ -709,9 +712,9 @@ export default function AnnaSetu() {
             ) : (
               <ProfileMenu
                 user={{
-                  name: User.name,
-                  email: User.email,
-                  initial: currentUser.name?.[0]?.toUpperCase() || "?",
+                  name: user.username,
+                  email: user.email,
+                  initial: user.username?.[0]?.toUpperCase() || "?",
                 }}
                 onViewMore={() => fireToast("Opening your profile…")}
                 onLogout={handleLogout}
@@ -930,8 +933,8 @@ export default function AnnaSetu() {
               <button
                 onClick={() => setCategory("all")}
                 className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${category === "all"
-                    ? "bg-orange-600 text-white border-orange-600 shadow-sm"
-                    : dark ? "bg-stone-900 text-stone-300 border-stone-700 hover:border-orange-500" : "bg-white text-stone-600 border-orange-100 hover:border-orange-300"
+                  ? "bg-orange-600 text-white border-orange-600 shadow-sm"
+                  : dark ? "bg-stone-900 text-stone-300 border-stone-700 hover:border-orange-500" : "bg-white text-stone-600 border-orange-100 hover:border-orange-300"
                   }`}
               >
                 All categories
@@ -944,8 +947,8 @@ export default function AnnaSetu() {
                     key={c}
                     onClick={() => setCategory(c)}
                     className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border transition-all ${active
-                        ? "bg-orange-600 text-white border-orange-600 shadow-sm"
-                        : dark ? "bg-stone-900 text-stone-300 border-stone-700 hover:border-orange-500" : "bg-white text-stone-600 border-orange-100 hover:border-orange-300"
+                      ? "bg-orange-600 text-white border-orange-600 shadow-sm"
+                      : dark ? "bg-stone-900 text-stone-300 border-stone-700 hover:border-orange-500" : "bg-white text-stone-600 border-orange-100 hover:border-orange-300"
                       }`}
                   >
                     <Icon className="w-3.5 h-3.5" /> {c}

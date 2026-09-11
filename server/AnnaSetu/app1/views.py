@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from app1.models import (User,ProfileModel,Category,FoodListing,Order,PaymentModel,Review,Wishlist,Conversation,Message,Report,Notification,)
 from app1.serializers import (UserSerializer,ProfileSerializer,CategorySerializer,FoodListingSerializer,OrderSerializer,PaymentSerializer,ReviewSerializer,WishlistSerializer,ConversationSerializer,MessageSerializer,ReportSerializer,NotificationSerializer)
-from rest_framework import viewsets , permissions,generics
+from rest_framework import viewsets ,permissions,generics
+from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import action
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
@@ -105,3 +107,14 @@ class UserView(viewsets.ModelViewSet):
         users = User.objects.filter(role="USER")
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
+
+
+
+class FoodListingView(viewsets.ModelViewSet):
+    queryset = FoodListing.objects.all()
+    serializer_class=FoodListingSerializer 
+    authentication_classes = []   
+    permission_classes = [AllowAny] 
+    parser_classes = [MultiPartParser, FormParser]
+    
+
