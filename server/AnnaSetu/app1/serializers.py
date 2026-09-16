@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from app1.models import (User,ProfileModel,Category,FoodListing,Order,PaymentModel,Review,Wishlist,Conversation,Message,Report,Notification)
+from django.utils import timezone
+from datetime import timedelta
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -31,8 +33,14 @@ class CategorySerializer(serializers.ModelSerializer):
           fields=['id','name','expiry_hours']
 
 class FoodListingSerializer(serializers.ModelSerializer):
-    seller_email = serializers.ReadOnlyField(source="seller.email")
-    category_name = serializers.ReadOnlyField(source="food_category.name")
+
+    seller_email = serializers.ReadOnlyField(
+        source="seller.email"
+    )
+
+    category_name = serializers.ReadOnlyField(
+        source="food_category.name"
+    )
 
     class Meta:
         model = FoodListing
@@ -57,9 +65,23 @@ class FoodListingSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'seller_email',
             'category_name',
+            'expiry_time',
             'status',
             'created_at',
-        ]   
+        ]
+
+    def create(self, validated_data):
+
+        category = validated_data['food_category']
+
+        expiry_time = (
+            timezone.now()
+            + timedelta(hours=category.expiry_hours)
+        )
+
+        validated_data['expiry_time'] = expiry_time
+
+        return FoodListing.objects.create(**validated_data)
      
 
      
