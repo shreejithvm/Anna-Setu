@@ -3,7 +3,7 @@ from app1.models import (User,ProfileModel,Category,FoodListing,Order,PaymentMod
 from app1.serializers import (UserSerializer,ProfileSerializer,CategorySerializer,FoodListingSerializer,OrderSerializer,PaymentSerializer,ReviewSerializer,WishlistSerializer,ConversationSerializer,MessageSerializer,ReportSerializer,NotificationSerializer)
 from rest_framework import viewsets ,permissions,generics
 from rest_framework.generics import RetrieveUpdateAPIView
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from rest_framework.decorators import action
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
@@ -118,3 +118,12 @@ class FoodListingView(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
     
 
+class FoodOrderView(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class=OrderSerializer
+    authentication_classes = []   
+    permission_classes = [AllowAny] 
+    parser_classes = [JSONParser,MultiPartParser, FormParser]
+    
+
+    

@@ -90,17 +90,21 @@ class FoodListingSerializer(serializers.ModelSerializer):
 # Order Serializer
 # -----------------------------
 class OrderSerializer(serializers.ModelSerializer):
-
+    food = FoodListingSerializer(read_only=True)
+    food_id = serializers.PrimaryKeyRelatedField(queryset=FoodListing.objects.all(),source="food",write_only=True)
     buyer_email = serializers.ReadOnlyField(source="buyer.email")
-    seller_email = serializers.ReadOnlyField(source="seller.email")
     class Meta:
         model = Order
-        fields = ["id","food","buyer","buyer_email","seller","seller_email","quantity","total_price","status",]
-        read_only_fields = (
-            "buyer",
-            "seller",
-            "total_price",
-        )
+        fields = ["id","food","food_id","buyer","buyer_email","price_at_order","status",]
+        read_only_fields = [
+         "price_at_order"
+        ]
+
+    def create(self, validated_data):
+        food = validated_data["food"]
+        order = Order.objects.create(food=food,buyer=validated_data["buyer"],price_at_order=food.price)
+        print(food.name)
+        return order
 
 
 # -----------------------------

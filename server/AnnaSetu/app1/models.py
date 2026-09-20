@@ -97,9 +97,7 @@ class FoodListing(models.Model):
 class Order(models.Model):
     food = models.ForeignKey(FoodListing, on_delete=models.CASCADE)
     buyer = models.ForeignKey(User, on_delete=models.CASCADE)
-    seller = models.ForeignKey(User, related_name="sales",on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    price_at_order = models.DecimalField(max_digits=10,decimal_places=2)
     status = models.CharField(
         max_length=20,
         choices=[
@@ -110,8 +108,8 @@ class Order(models.Model):
         ],
     default="PENDING")
 
-    def __str__(self):
-        return f"{self.food}-{self.total_price}"
+def __str__(self):
+    return f"{self.food} - {self.buyer} - {self.price_at_order}"
     
 class PaymentModel(models.Model):
     PAYMENT_STATUS = (
@@ -183,7 +181,7 @@ class Message(models.Model):
     conversation = models.ForeignKey(
         Conversation,
         on_delete=models.CASCADE
-    )
+    )   
 
     sender = models.ForeignKey(
         User,

@@ -29,6 +29,7 @@ routers=DefaultRouter()
 
 routers.register('user',views.UserView,basename='user_view')
 routers.register('foodlist',views.FoodListingView,basename='food-listing')
+routers.register('order',views.FoodOrderView,basename='f-order')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
